@@ -2,5 +2,5 @@ class Environment:
     def __init__(self):
         pass
 
-    def run_policy(self, policy):
+    def run_policy(self, policy, **kwargs):
         pass
