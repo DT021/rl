@@ -67,31 +67,45 @@ class Blackjack(Environment):
             decision = self.naiive_policy(self.dealer_hand, self.seen_cards, self.dealer_hand)
         return calculate_score(self.dealer_hand)
 
-    def play_hand(self, policy):
+    def play_hand(self, player):
         # deal cards and let all other players play
         self.initialize_hand()
 
+        events = []
         # inputs are number of each card seen, my minimum hand score, how many aces I have
         # run policy repeatedly until policy returns either 0 (stay) or player score exceeds 21
         policy_result = 1
         score = 0
         while policy_result and calculate_score(self.my_hand) < 21:
             self.my_draw()
-            policy_result = policy(self.my_hand, self.seen_cards, self.dealer_hand)
+            policy_result = player.run_policy(self.my_hand, self.seen_cards, self.dealer_hand)
+            events.append({"my_hand": list(self.my_hand),
+                           "seen_cards": list(self.seen_cards),
+                           "dealer_hand": list(self.dealer_hand),
+                           "action": int(policy_result)})
             score = calculate_score(self.my_hand)
-        if score == 21:
-            return 1
-        if score > 21:
-            return -1
+
         dealer_score = self.dealer_play()
-        if dealer_score > 21:
-            return 1
-        if score > dealer_score:
-            return 1
-        if score == dealer_score:
-            return 0
+
+        if score == 21:
+            reward = 1
+        elif score > 21:
+            reward = -1
+        elif dealer_score > 21:
+            reward = 1
+        elif score > dealer_score:
+            reward = 1
+        elif score == dealer_score:
+            reward = 0
         else:
-            return -1
+            reward = -1
+
+        for event in events:
+            event["reward"] = reward
+
+        player.memorize(events)
+
+        return reward
 
 
     def run_policy(self, policy, **kwargs):
@@ -121,8 +135,8 @@ if __name__ == "__main__":
     bj_player = BlackjackPlayer()
     bj_player.create_model()
     results = []
-    for i in range(1000):
-        results.append(bj_env.play_hand(bj_player.run_policy))
+    for i in range(10):
+        results.append(bj_env.play_hand(bj_player))
 
     total = np.sum(results)
     print("naiive_policy total: ", total)
