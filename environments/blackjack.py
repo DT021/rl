@@ -143,8 +143,9 @@ if __name__ == "__main__":
 
 
     hidden_size = 10
-    # cards seen (13) + my score (1) + my aces (1) + dealer score (1) + dealer aces (1)
+    # cards seen (13) + my score (1) + my aces (1) + dealer score (1) + dealer aces (1) + action (1)
     num_inputs = 13 + \
+                 1 + \
                  1 + \
                  1 + \
                  1 + \

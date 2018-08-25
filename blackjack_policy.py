@@ -11,9 +11,9 @@ class BlackjackPlayer():
 
     def create_model(self):
         model = Sequential()
-        model.add(Dense(10, input_shape=(17, ), activation='relu'))
+        model.add(Dense(10, input_shape=(18, ), activation='relu'))
         model.add(Dense(10, activation='relu'))
-        model.add(Dense(2, activation='softmax'))
+        model.add(Dense(1, activation='tanh'))
         model.compile(sgd(lr=.2), "mse")
         self.model = model
 
@@ -29,13 +29,23 @@ class BlackjackPlayer():
 
         return cards_seen + my_score + my_aces + dealer_score + dealer_aces
 
-    def run_policy(self, my_hand, seen_cards, dealer_hand, exploration=0.00):
+    def run_policy(self, my_hand, seen_cards, dealer_hand, exploration=0.00, deterministic=True):
         # transform inputs
         inputs = self.transform_inputs(my_hand, seen_cards, dealer_hand)
 
-        # run model
-        final_output = self.model.predict(x=np.array(inputs).reshape(1, -1))[0]
+        input_hit = inputs + [1]
+        input_stay = inputs + [0]
 
+        # run model
+        final_output_hit = self.model.predict(x=np.array(input_hit).reshape(1, -1))[0]
+        final_output_stay = self.model.predict(x=np.array(input_hit).reshape(1, -1))[0]
+
+        # TODO: determine probability of the outputs for hit and stay
+        final_output = self.move_scaler([final_output_stay, final_output_hit], min=-1, max=1)
+
+        if deterministic:
+            selection = np.argmax(final_output)
+            return selection
         print("final_output: ", final_output)
         if np.random.uniform(0, 1) < exploration:
             return np.random.choice([i for i in range(len(final_output))])
@@ -57,11 +67,42 @@ class BlackjackPlayer():
             self.memory.append({"state": self.create_state(event["my_hand"], event["seen_cards"], event["dealer_hand"]),
                                 "action": event["action"], "reward": event["reward"]})
 
-    def experience_memories(self):
+    def experience_memories(self, num_recent=None):
         # TODO: convert memories into a training set
-        pass
+        xs = []
+        ys = []
+
+        if num_recent:
+            mems = self.memory[-num_recent:]
+        else:
+            mems = self.memory
+
+        for memory in mems:
+            x, y = self.convert_memory(memory)
+            xs.append(x)
+            ys.append(y)
+
+        x = np.array(xs).reshape([len(xs), ])
+        y = np.array(ys).reshape([len(ys), 1])
         # TODO: batch train with those memories
 
-    def convert_memory(self):
-        pass
-        # TODO: take one memory, convert it into x and y. Then duplicate depending on magnitude of reward.
+
+    def convert_memory(self, memory):
+        # TODO: take one memory, convert it into x and y
+        state = memory["state"]
+        action = memory["action"]
+        reward = memory["reward"]
+
+        x = self.transform_inputs(state["my_hand"], seen_cards=state["seen_cards"], dealer_hand=state["dealer_hand"])
+        x = x + [action]
+        y = reward
+        return x, y
+
+    @staticmethod
+    def move_scaler(x, min, max):
+        scale = max - min
+        scaled_x = [(v - min) / scale for v in x]
+
+        total = np.sum(scaled_x)
+        result = [v / total for v in scaled_x]
+        return result
