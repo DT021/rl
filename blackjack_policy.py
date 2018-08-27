@@ -1,21 +1,35 @@
 from keras.models import Sequential
 from keras.layers.core import Dense
-from keras.optimizers import sgd
+from keras.optimizers import sgd, Adam, Nadam
 from blackjack_utils import assess_card, calculate_score
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 class BlackjackPlayer():
     def __init__(self):
         self.model = None
         self.memory = []
+        self.deterministic = True
+        self.exploration = 0.00
+        self.input_size = 18
+        self.output_size = 2
+        self.scaler = MinMaxScaler(feature_range=(-1, 1))
+        self.fit_scaler()
 
     def create_model(self):
         model = Sequential()
-        model.add(Dense(10, input_shape=(18, ), activation='relu'))
-        model.add(Dense(10, activation='relu'))
-        model.add(Dense(1, activation='tanh'))
-        model.compile(sgd(lr=.2), "mse")
+        model.add(Dense(64, input_shape=(self.input_size, ), activation='tanh'))
+        model.add(Dense(64, activation='relu'))
+        model.add(Dense(64, activation='relu'))
+        model.add(Dense(1, activation='linear'))
+        model.compile(Nadam(), "mse")
         self.model = model
+
+    def fit_scaler(self):
+        #                  cards seen      my score   my aces   dealer score dealer aces   hit/stay
+        possible_values = [[-2, 4]]*13 + [[0, 21]] + [[-2, 4]] + [[0, 11]] + [[-2, 4]] + [[0, 1]]
+        a = np.array(possible_values).T
+        self.scaler.fit(a)
 
     def transform_inputs(self, my_hand, seen_cards, dealer_hand):
         my_score = [calculate_score(my_hand, return_minimum=True)]
@@ -29,26 +43,36 @@ class BlackjackPlayer():
 
         return cards_seen + my_score + my_aces + dealer_score + dealer_aces
 
-    def run_policy(self, my_hand, seen_cards, dealer_hand, exploration=0.00, deterministic=True):
+    def run_policy(self, my_hand, seen_cards, dealer_hand, return_decision=True):
         # transform inputs
+
+        final_output = [i for i in range(self.output_size)]
+        if np.random.uniform(0, 1) < self.exploration:
+            return np.random.choice([i for i in range(len(final_output))])
+
         inputs = self.transform_inputs(my_hand, seen_cards, dealer_hand)
 
         input_hit = inputs + [1]
         input_stay = inputs + [0]
 
         # run model
-        final_output_hit = self.model.predict(x=np.array(input_hit).reshape(1, -1))[0]
-        final_output_stay = self.model.predict(x=np.array(input_hit).reshape(1, -1))[0]
+        x_hit = self.scaler.transform(np.array(input_hit).reshape(1, -1))
+        x_stay = self.scaler.transform(np.array(input_stay).reshape(1, -1))
+
+        final_output_hit = self.model.predict(x_hit)[0]
+        final_output_stay = self.model.predict(x_stay)[0]
 
         # TODO: determine probability of the outputs for hit and stay
         final_output = self.move_scaler([final_output_stay, final_output_hit], min=-1, max=1)
 
-        if deterministic:
+        if not return_decision:
+            return final_output
+
+        if self.deterministic:
             selection = np.argmax(final_output)
             return selection
         print("final_output: ", final_output)
-        if np.random.uniform(0, 1) < exploration:
-            return np.random.choice([i for i in range(len(final_output))])
+
 
         # transform outputs
         rand = np.random.uniform(0, 1)
@@ -67,25 +91,33 @@ class BlackjackPlayer():
             self.memory.append({"state": self.create_state(event["my_hand"], event["seen_cards"], event["dealer_hand"]),
                                 "action": event["action"], "reward": event["reward"]})
 
-    def experience_memories(self, num_recent=None):
+    def experience_memories(self, num_recent=None, batch_size=16, batch_count=16):
         # TODO: convert memories into a training set
         xs = []
         ys = []
 
         if num_recent:
-            mems = self.memory[-num_recent:]
+            if len(self.memory) > num_recent:
+                mems = self.memory[-num_recent:]
+            else:
+                mems = self.memory
         else:
             mems = self.memory
 
-        for memory in mems:
-            x, y = self.convert_memory(memory)
-            xs.append(x)
-            ys.append(y)
 
-        x = np.array(xs).reshape([len(xs), ])
-        y = np.array(ys).reshape([len(ys), 1])
-        # TODO: batch train with those memories
+        for batch in range(batch_count):
+            mems_batch = np.random.choice(mems, batch_size, replace=False)
+            for memory in mems_batch:
+                x, y = self.convert_memory(memory)
+                xs.append(x)
+                ys.append(y)
 
+            x = np.array(xs).reshape([len(xs), self.input_size])
+            y = np.array(ys).reshape([len(ys), 1])
+
+            x = self.scaler.transform(x)
+
+            self.model.train_on_batch(x=x, y=y)
 
     def convert_memory(self, memory):
         # TODO: take one memory, convert it into x and y

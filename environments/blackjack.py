@@ -3,6 +3,8 @@ from random import shuffle
 from blackjack_utils import assess_card, calculate_score
 import numpy as np
 from blackjack_policy import BlackjackPlayer
+from dumb_blackjack_policy import DumbPlayer, NovicePlayer
+from statistical_policy import StatisticalPlayer
 from keras.models import Sequential
 from keras.layers.core import Dense
 from keras.optimizers import sgd
@@ -23,7 +25,7 @@ class Blackjack(Environment):
         self.my_hand = []
         self.dealer_hand = []
         self.deck = CardDeck()
-        self.num_other_players = 5
+        self.num_other_players = 10
 
 
     def default_policy(self, cur_score):
@@ -134,22 +136,43 @@ if __name__ == "__main__":
     bj_env = Blackjack()
     bj_player = BlackjackPlayer()
     bj_player.create_model()
-    results = []
-    for i in range(10):
-        results.append(bj_env.play_hand(bj_player))
+    bj_player.deterministic = True
+    bj_player.exploration = 1.0
 
-    total = np.sum(results)
-    print("naiive_policy total: ", total)
+    batch_size = 1024
+    batch_count = 100
+    hands_per_generation = 20000  # 10 thousand
+    num_memories = 10000  # 100 thousand
+    generations = 100
 
 
-    hidden_size = 10
-    # cards seen (13) + my score (1) + my aces (1) + dealer score (1) + dealer aces (1) + action (1)
-    num_inputs = 13 + \
-                 1 + \
-                 1 + \
-                 1 + \
-                 1 + \
-                 1
+    all_results = []
+    moving_results = []
+    for generation in range(generations):  # for each generation
+        gen_results = []
+        for i in range(hands_per_generation):    # play new hands and gather experience
+            result = bj_env.play_hand(bj_player)
+            gen_results.append(result)
+            all_results.append(result)
 
+        # learn based on recent experiences
+        bj_player.experience_memories(num_recent=num_memories,  # don't pay attention to old irrelevant memories
+                                      batch_size=batch_size,    # how big each batch is
+                                      batch_count=batch_count)   # how many batches to do
+
+        generation_mean = np.mean(gen_results)
+        print(f"generation {generation+1} score: {generation_mean}")
+
+        bj_player.exploration = bj_player.exploration*.95  # on the next generation be less adventurous
+
+    # test results
+    test_results = []
+    test_size = 10000 # 10 thousand
+    bj_player.exploration = 0.0
+    for i in range(test_size):
+        result = bj_env.play_hand(bj_player)
+        test_results.append(result)
+
+    print(f"test_results: {np.mean(test_results)}")
 
 

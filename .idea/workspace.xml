@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1822dc31-e096-4d00-b494-4e77ca401f86" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/dumb_blackjack_policy.py" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/statistical_policy.py" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/blackjack_policy.py" afterPath="$PROJECT_DIR$/blackjack_policy.py" />
-      <change beforePath="$PROJECT_DIR$/blackjack_utils.py" afterPath="$PROJECT_DIR$/blackjack_utils.py" />
       <change beforePath="$PROJECT_DIR$/environments/blackjack.py" afterPath="$PROJECT_DIR$/environments/blackjack.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="blackjack.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="blackjack.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/environments/blackjack.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="836">
-              <caret line="142" column="0" lean-forward="true" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
+            <state relative-caret-position="583">
+              <caret line="178" column="0" lean-forward="true" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
               <folding>
                 <element signature="e#0#41#0" expanded="true" />
               </folding>
@@ -33,20 +35,44 @@
       <file leaf-file-name="blackjack_utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blackjack_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
+            <state relative-caret-position="150">
+              <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="blackjack_policy.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="blackjack_policy.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/blackjack_policy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="82" column="24" lean-forward="true" selection-start-line="82" selection-start-column="24" selection-end-line="82" selection-end-column="24" />
+            <state relative-caret-position="345">
+              <caret line="23" column="48" lean-forward="true" selection-start-line="23" selection-start-column="48" selection-end-line="23" selection-end-column="48" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="statistical_policy.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/statistical_policy.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="456">
+              <caret line="35" column="39" lean-forward="false" selection-start-line="35" selection-start-column="39" selection-end-line="35" selection-end-column="39" />
+              <folding>
+                <element signature="e#0#44#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dumb_blackjack_policy.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/dumb_blackjack_policy.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="20" lean-forward="true" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#44#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -57,6 +83,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>transform_inp</find>
+      <find>adam</find>
+      <find>Adam</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -66,9 +94,11 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/environments/base.py" />
-        <option value="$PROJECT_DIR$/environments/blackjack.py" />
         <option value="$PROJECT_DIR$/blackjack_utils.py" />
+        <option value="$PROJECT_DIR$/dumb_blackjack_policy.py" />
+        <option value="$PROJECT_DIR$/statistical_policy.py" />
         <option value="$PROJECT_DIR$/blackjack_policy.py" />
+        <option value="$PROJECT_DIR$/environments/blackjack.py" />
       </list>
     </option>
   </component>
@@ -130,7 +160,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.blackjack_policy">
+  <component name="RunManager" selected="Python.blackjack">
     <configuration name="blackjack" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -174,11 +204,12 @@
       <item index="1" class="java.lang.String" itemvalue="Python.blackjack_policy" />
     </list>
     <recent_temporary>
-      <list size="4">
+      <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.blackjack" />
-        <item index="1" class="java.lang.String" itemvalue="Python.blackjack_policy" />
+        <item index="1" class="java.lang.String" itemvalue="Python.blackjack" />
         <item index="2" class="java.lang.String" itemvalue="Python.blackjack" />
         <item index="3" class="java.lang.String" itemvalue="Python.blackjack" />
+        <item index="4" class="java.lang.String" itemvalue="Python.blackjack" />
       </list>
     </recent_temporary>
   </component>
@@ -309,30 +340,50 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/blackjack_utils.py">
+    <entry file="file://$PROJECT_DIR$/statistical_policy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="456">
+          <caret line="35" column="39" lean-forward="false" selection-start-line="35" selection-start-column="39" selection-end-line="35" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/environments/blackjack.py">
+    <entry file="file://$PROJECT_DIR$/dumb_blackjack_policy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="836">
-          <caret line="142" column="0" lean-forward="true" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
+        <state relative-caret-position="255">
+          <caret line="17" column="20" lean-forward="true" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
           <folding>
-            <element signature="e#0#41#0" expanded="true" />
+            <element signature="e#0#44#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/blackjack_policy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="82" column="24" lean-forward="true" selection-start-line="82" selection-start-column="24" selection-end-line="82" selection-end-column="24" />
+        <state relative-caret-position="345">
+          <caret line="23" column="48" lean-forward="true" selection-start-line="23" selection-start-column="48" selection-end-line="23" selection-end-column="48" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/blackjack_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="0" lean-forward="true" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/environments/blackjack.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="583">
+          <caret line="178" column="0" lean-forward="true" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
           </folding>
         </state>
       </provider>
